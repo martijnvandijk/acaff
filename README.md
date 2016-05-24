@@ -5,7 +5,7 @@ acaff -- Airgapped/Asynchronous caff(1)
   with `caff(1)`, while keeping my primary keys on an airgapped machine.
 
 It was originally written in early 2015, and whether the name means
-  “airgapped caff” or “asynchronous caff” has been lot to time.
+  “airgapped caff” or “asynchronous caff” has been lost to time.
 
 Credit goes to weasel (Peter Palfrader) for writing `caff` in the first place.
 
@@ -33,12 +33,31 @@ Back to the networked computer:
 	It's time for the mail canon!
 
 
-Rationale
----------
+Design rationale
+----------------
 
 - Makes keysigning less unbearably annoying than it would otherwise be.
 - Does *not* trust data coming from outside the airgapped machine.
 - In particular, key verification is done on the airgapped machine.
+
+
+Files
+-----
+
+`acaff`, both on the airgapped machine and the networked one, is called
+  with a directory as first argument.  The files written in that directory
+  on the networked machine should be available on the airgapped machine.
+
+Typically, this would be the mountpoint of some removable storage (USB
+  thumbdrive, SD card, floppy, SPI flash, ...).
+
+These are the files that get written there:
+
+	.
+	├── keyids       # Space-separated list of key ids, written in the first stage
+	├── pubs.asc     # ASCII-armored file containing those keys
+	└── caff.tar.bz2 # Tarball of caff's state
+
 
 
 TODOs/limits
