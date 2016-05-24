@@ -1,0 +1,88 @@
+# .caffrc -- vim:ft=perl: -- -*- mode: perl -*-
+# This file is in perl(1) format - see caff(1) for details.
+
+$CONFIG{'owner'} = 'Nicolas Braud-Santoni';
+$CONFIG{'email'} = 'nicolas@braud-santoni.eu';
+$CONFIG{'reply-to'} = 'nicolas+caff@braud-santoni.eu';
+
+# You can get your long keyid from
+#   gpg --keyid-format long --list-key <yourkeyid|name|emailaddress..>
+#
+# If you have a v4 key, it will simply be the last 16 digits of
+# your fingerprint.
+#
+# Example:
+#   $CONFIG{'keyid'} = [ qw{FEDCBA9876543210} ];
+#  or, if you have more than one key:
+#   $CONFIG{'keyid'} = [ qw{0123456789ABCDEF 89ABCDEF76543210} ];
+$CONFIG{'keyid'} = [ qw{B0739AAD91B7CDC0} ];
+$CONFIG{'no-download'} = 1;
+$CONFIG{'no-sign'} = 0;
+$CONFIG{'mail'} = 'no';
+
+
+# Mail template to use for the encrypted part
+$CONFIG{'mail-template'} = << 'EOM';
+[Version française ci-dessous]
+Hi,
+
+You will find attached the user id{(scalar @uids >= 2 ? 's' : '')}
+{foreach $uid (@uids) {
+    $OUT .= "\t".$uid."\n";
+};}of your key {$key} signed by me.
+
+If you have multiple user ids, I sent the signature for each user id
+separately to that user id's associated email address.  You can import
+the signatures by running each through `gpg --import`.
+
+Note that I did not upload your key to any keyservers.  If you want
+this new signature to be available to others, please upload it
+yourself.  With GnuPG this can be done using
+
+	gpg --keyserver pool.sks-keyservers.net --send-key {$key}
+
+
+You also might want to consider using HKPS to contact the keyservers.
+More information on this can be found at:
+
+	https://sks-keyservers.net/overview-of-pools.php#pool_hkps
+
+
+If you have any questions, don't hesitate to ask.
+
+
+Best,
+
+  $owner
+
+----------------------------------------------------------------------
+
+Salut !
+
+Tu va trouver ci-joint des signatures pour {(scalar @uids >= 2 ? 'les ' : 'l\'')}uid
+  de ta clef {$key}, signés par mes soins :
+{foreach $uid (@uids) {
+    $OUT .= "\t".$uid."\n";
+};}
+
+Si tu as plusieurs uids, avec des adresses mail différentes, j'ai envoyé une
+signature à chaque adresse séparément. Tu peux les importer une par une
+avec `gpg --import`.
+
+Note que je n'ai pas publié ces signatures sur les serveurs de clefs.
+Si tu veux que cette signature soit publique, tu va devoir la publier toi-même :
+	gpg --keyserver pool.sks-keyservers.net --send-key {$key}
+
+Je ne peux que te conseiller, pour ce genre d'opération, d'utiliser le
+protocole HKPS (c'est aux serveurs de clefs ce que HTTPS est aux serveurs web).
+Tu trouvera des info à ce sujet (mais en anglais) ici :
+  https://sks-keyservers.net/overview-of-pools.php#pool_hkps
+
+
+Si t'as des questions, n'hésite pas à me contacter.
+
+
+Cordialement,
+
+  $owner
+EOM

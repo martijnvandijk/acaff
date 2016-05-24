@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+STORAGE="$1"; shift
+
+if [ ! -d "$STORAGE" -o ! -w "$STORAGE" ]; then
+	echo "$STORAGE isn't a writeable directory" >&2
+	exit 1
+fi
+
+echo "$@" > "$STORAGE"/keyids
+
+for i in "$@"; do
+	gpg2 -k "$i" >/dev/null 2>/dev/null || gpg2 --recv-keys "$i"
+done
+
+gpg2 --export -a --export-options export-minimal,export-clean \
+	"$@" > "$STORAGE"/pubs.asc
